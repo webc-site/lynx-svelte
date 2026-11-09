@@ -1,0 +1,5 @@
+node_modules/
+sparkling/
+lynxtron/node_modules/
+lynxtron/dist/
+lynxtron/main.lynx.bundle

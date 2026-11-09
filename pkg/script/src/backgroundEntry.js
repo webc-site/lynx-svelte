@@ -1,0 +1,3 @@
+globalThis.loadCard = () => undefined;
+
+export {};

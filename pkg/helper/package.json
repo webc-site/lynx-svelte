@@ -1,0 +1,15 @@
+{
+  "name": "@lynx-svelte/helper",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./styleBind": "./src/styleBind.js",
+    "./classBind": "./src/classBind.js",
+    "./transformParse": "./src/transformParse.js",
+    "./propMerge": "./src/propMerge.js",
+    "./propHandle": "./src/propHandle.js",
+    "./eventWrap": "./src/eventWrap.js"
+  }
+}

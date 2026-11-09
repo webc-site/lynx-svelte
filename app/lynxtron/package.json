@@ -1,0 +1,20 @@
+{
+  "name": "lynx-svelte-lynxtron",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "build": "rsbuild build --environment desktop",
+    "pack": "lynxtron-builder --publish never"
+  },
+  "devDependencies": {
+    "@lynx-js/lynxtron": "0.0.31",
+    "@lynx-js/lynxtron-builder": "0.0.31",
+    "@lynx-js/lynxtron-dev-plugins": "0.0.31",
+    "@rsbuild/core": "2.3.1"
+  },
+  "trustedDependencies": [
+    "@lynx-js/lynxtron"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "@lynx-svelte/script",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./rspackConfig": "./src/rspackConfig.js",
+    "./lepusPlugin": "./src/lepusPlugin.js",
+    "./mainThreadPlugin": "./src/mainThreadPlugin.js",
+    "./webBundlePlugin": "./src/webBundlePlugin.js"
+  },
+  "bin": {
+    "lynx-svelte-qr": "./bin/qrGen.js",
+    "lynx-svelte-build": "./bin/bundleBuild.js"
+  },
+  "dependencies": {
+    "@lynx-js/template-webpack-plugin": "0.16.7",
+    "@lynx-js/web-webpack-plugin": "0.6.7",
+    "@rspack/core": "2.3.1",
+    "acorn": "^8.19.0",
+    "esrap": "^2.4.0",
+    "headless-qr": "^1.0.3",
+    "svelte-loader": "^3.2.4",
+    "zimmerframe": "^1.1.5"
+  }
+}

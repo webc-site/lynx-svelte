@@ -1,0 +1,41 @@
+{
+  "name": "lynx-svelte",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "pkg/*",
+    "demo"
+  ],
+  "scripts": {
+    "test": "bun test --conditions=browser",
+    "test:web": "bun test/web-smoke-run.js",
+    "test:watch": "bun test --watch --conditions=browser",
+    "demo:build": "cd demo && bun run build",
+    "demo:dev": "cd demo && bun run dev",
+    "qr": "bun pkg/script/bin/qrGen.js",
+    "site:build": "bun tool/webBuild.js",
+    "desktop:build": "bun tool/desktopBuild.js",
+    "android:build": "bun tool/androidBuild.js",
+    "ios:build": "bun tool/iosBuild.js",
+    "ci:prepare": "bun tool/prepare.js"
+  },
+  "dependencies": {
+    "@lynx-svelte/core": "workspace:*",
+    "@lynx-svelte/helper": "workspace:*",
+    "@lynx-svelte/script": "workspace:*",
+    "svelte": "file:../svelte/packages/svelte"
+  },
+  "devDependencies": {
+    "@lynx-js/template-webpack-plugin": "0.16.7",
+    "@lynx-js/web-core": "0.26.7",
+    "@lynx-js/web-webpack-plugin": "0.6.7",
+    "@rspack/core": "2.3.1",
+    "acorn": "^8.19.0",
+    "esrap": "^2.4.0",
+    "headless-qr": "^1.0.3",
+    "playwright": "1.65.0",
+    "svelte-loader": "^3.2.4",
+    "zimmerframe": "^1.1.5"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@lynx-svelte/core",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./renderer": "./src/renderer.js",
+    "./pageRuntime": "./src/pageRuntime.js",
+    "./constant": "./src/constant.js",
+    "./nodeMap": "./src/nodeMap.js"
+  },
+  "peerDependencies": {
+    "svelte": "*"
+  }
+}

@@ -1,0 +1,10 @@
+node_modules/
+dist/
+app/www/
+app/android/
+app/ios/
+.tmp/
+*.lynx.bundle
+qr.png
+qr.txt
+.DS_Store

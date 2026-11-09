@@ -1,0 +1,37 @@
+name: setup
+description: Checkout svelte PR dependency and prepare the Bun workspace
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout svelte upstream
+      uses: actions/checkout@v7
+      with:
+        repository: sveltejs/svelte
+        path: svelte
+        fetch-depth: 0
+
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: latest
+
+    - name: Cache dependencies
+      uses: actions/cache@v6
+      with:
+        path: |
+          svelte/node_modules
+          svelte/packages/svelte/node_modules
+          lynx-svelte/node_modules
+          lynx-svelte/app/node_modules
+          ~/.bun/install/cache
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: deps-${{ runner.os }}-${{ hashFiles('svelte/pnpm-lock.yaml', 'lynx-svelte/bun.lock', 'lynx-svelte/app/package.json') }}
+        restore-keys: |
+          deps-${{ runner.os }}-
+
+    - name: Prepare svelte PR and workspace
+      shell: bash
+      working-directory: lynx-svelte
+      run: bun tool/prepare.js

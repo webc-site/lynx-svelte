@@ -1,0 +1,44 @@
+productName: Lynx Svelte
+appId: dev.lynxsvelte.demo
+directories:
+  output: ../../dist/desktop
+  app: dist/desktop
+electronDist: ./node_modules/@lynx-js/lynxtron/dist/builder
+files:
+  - index.js
+  - '**/*.lynx.bundle'
+  - '**/*.js'
+  - '**/*.css'
+  - '**/*.html'
+  - '**/*.json'
+  - '**/*.jsn'
+  - '**/*.png'
+asar: true
+npmRebuild: false
+publish: []
+electronBranding:
+  projectName: lynxtron
+  productName: Lynxtron
+mac:
+  target:
+    - dmg
+    - zip
+  artifactName: LynxSvelte-v${version}-darwin-${arch}.${ext}
+  identity: null
+win:
+  target:
+    - target: nsis
+      arch: x64
+    - target: zip
+      arch: x64
+  artifactName: LynxSvelte-v${version}-win-x64.${ext}
+nsis:
+  artifactName: LynxSvelte-v${version}-win-x64-Setup.${ext}
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+linux:
+  target:
+    - AppImage
+    - deb
+  artifactName: LynxSvelte-v${version}-linux-${arch}.${ext}
+  category: Development
