@@ -3,6 +3,9 @@ dist/
 app/www/
 app/android/
 app/ios/
+app/sparkling/
+app/lynxtron/node_modules/
+app/lynxtron/dist/
 .tmp/
 *.lynx.bundle
 qr.png

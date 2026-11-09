@@ -24,9 +24,13 @@ const html = `<!doctype html>
 </body>
 </html>`;
 
-const fileGet = async (file_path) => {
+const fileGet = async (file_path, content_type) => {
 	const file = Bun.file(file_path);
-	if (await file.exists()) return new Response(file);
+	if (await file.exists()) {
+		return new Response(file, {
+			headers: content_type == null ? {} : { 'content-type': content_type }
+		});
+	}
 	return new Response('not found', { status: 404 });
 };
 
@@ -37,17 +41,34 @@ const server = Bun.serve({
 			pathname = url.pathname;
 
 		if (pathname === '/') return new Response(html, { headers: { 'content-type': 'text/html; charset=utf-8' } });
-		if (pathname === '/main.web.bundle') return fileGet(path.join(DIST_DIR, 'main.web.bundle'));
-		if (pathname === '/web-core/client.js') return fileGet(path.join(WEB_CORE_DIR, 'js/client.js'));
-		if (pathname === '/web-core/client.css') return fileGet(path.join(WEB_CORE_DIR, 'css/client.css'));
+		if (pathname === '/main.web.bundle') {
+			return fileGet(path.join(DIST_DIR, 'main.web.bundle'), 'application/json');
+		}
+		if (pathname === '/web-core/client.js') {
+			return fileGet(path.join(WEB_CORE_DIR, 'js/client.js'), 'text/javascript; charset=utf-8');
+		}
+		if (pathname === '/web-core/client.css') {
+			return fileGet(path.join(WEB_CORE_DIR, 'css/client.css'), 'text/css; charset=utf-8');
+		}
 		if (pathname.startsWith('/static/')) {
-			return fileGet(path.join(WEB_CORE_DIR, pathname.slice('/static/'.length)));
+			const rel = pathname.slice('/static/'.length);
+			return fileGet(
+				path.join(WEB_CORE_DIR, rel),
+				rel.endsWith('.js') ? 'text/javascript; charset=utf-8' : undefined
+			);
 		}
 		if (pathname.startsWith('/web-core/')) {
 			const rel = pathname.startsWith('/web-core/static/')
 				? pathname.slice('/web-core/static/'.length)
 				: pathname.slice('/web-core/'.length);
-			return fileGet(path.join(WEB_CORE_DIR, rel));
+			return fileGet(
+				path.join(WEB_CORE_DIR, rel),
+				rel.endsWith('.js')
+					? 'text/javascript; charset=utf-8'
+					: rel.endsWith('.css')
+						? 'text/css; charset=utf-8'
+						: undefined
+			);
 		}
 		return new Response('not found', { status: 404 });
 	}

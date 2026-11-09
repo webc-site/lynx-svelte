@@ -4,7 +4,6 @@ import { WebWebpackPlugin } from '@lynx-js/web-webpack-plugin';
 import { lepusCompatPlugin } from './lepusPlugin.js';
 import { mainThreadPlugin } from './mainThreadPlugin.js';
 import { moduleWrapPlugin } from './moduleWrapPlugin.js';
-import { appServicePlugin } from './appServicePlugin.js';
 import { webManifestFallbackPlugin } from './webBundlePlugin.js';
 
 const CUSTOM_RENDERER_ID = '@lynx-svelte/core/renderer',
@@ -89,7 +88,6 @@ const rspackConfig = (entry, context_dir) => {
 			mainThreadPlugin(MAIN_THREAD_ASSET_NAME),
 			moduleWrapPlugin('main.js', '/main.js'),
 			new LynxEncodePlugin(),
-			appServicePlugin(),
 			new LynxTemplatePlugin({
 				filename: BUNDLE_NAME,
 				intermediate: INTERMEDIATE_NAME

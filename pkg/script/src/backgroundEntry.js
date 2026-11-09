@@ -1,3 +1,1 @@
-globalThis.loadCard = () => undefined;
-
 export {};

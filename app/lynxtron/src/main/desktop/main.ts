@@ -15,10 +15,7 @@ const main = async () => {
 	});
 
 	window.show();
-	await window.loadFile(LYNX_BUNDLE_PATH, {
-		data: { cardType: 'standalone' },
-		globalProps: { cardType: 'standalone' }
-	});
+	await window.loadFile(LYNX_BUNDLE_PATH);
 };
 
 main();

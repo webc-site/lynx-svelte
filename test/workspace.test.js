@@ -89,8 +89,9 @@ test('script package exposes working build config factories', () => {
 	const native = rspackConfig('./src/index.js', ROOT_DIR),
 		web = rspackWebConfig('./src/index.js', ROOT_DIR);
 
-	expect(native.entry.main).toBe(path.join(ROOT_DIR, 'src/index.js'));
+	expect(native.entry['main-thread']).toBe(path.join(ROOT_DIR, 'src/index.js'));
+	expect(native.entry.main).toContain('backgroundEntry.js');
 	expect(native.resolve.conditionNames).toContain('browser');
-	expect(native.plugins.length).toBe(3);
-	expect(web.plugins.length).toBe(5);
+	expect(native.plugins.length).toBe(5);
+	expect(web.plugins.length).toBe(4);
 });

@@ -26,6 +26,14 @@ await page.waitForFunction(
 		const textGet = (root) => {
 			let text = '';
 			if (root.shadowRoot != null) text += textGet(root.shadowRoot);
+			const frame_li = root.querySelectorAll?.('iframe') ?? [];
+			for (const frame of frame_li) {
+				try {
+					if (frame.contentDocument?.body != null) text += textGet(frame.contentDocument.body);
+				} catch {
+					// cross-origin frame
+				}
+			}
 			for (const child of root.childNodes) {
 				if (child.nodeType === 3) text += child.textContent;
 				else if (child.nodeType === 1) text += textGet(child);
@@ -44,6 +52,14 @@ const textGet = () =>
 		const walk = (root) => {
 			let text = '';
 			if (root.shadowRoot != null) text += walk(root.shadowRoot);
+			const frame_li = root.querySelectorAll?.('iframe') ?? [];
+			for (const frame of frame_li) {
+				try {
+					if (frame.contentDocument?.body != null) text += walk(frame.contentDocument.body);
+				} catch {
+					// cross-origin frame
+				}
+			}
 			for (const child of root.childNodes) {
 				if (child.nodeType === 3) text += child.textContent;
 				else if (child.nodeType === 1) text += walk(child);
@@ -60,6 +76,13 @@ const elementClick = (label) =>
 			for (const element of root.querySelectorAll('*')) {
 				element_li.push(element);
 				if (element.shadowRoot != null) walk(element.shadowRoot);
+				if (element.tagName === 'IFRAME') {
+					try {
+						if (element.contentDocument?.body != null) walk(element.contentDocument.body);
+					} catch {
+						// cross-origin frame
+					}
+				}
 			}
 		};
 		walk(document.body);

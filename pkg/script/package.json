@@ -15,11 +15,11 @@
     "lynx-svelte-build": "./bin/bundleBuild.js"
   },
   "dependencies": {
-    "@lynx-js/template-webpack-plugin": "0.16.7",
+    "@lynx-js/template-webpack-plugin": "0.6.10",
     "@lynx-js/web-webpack-plugin": "0.6.7",
-    "@rspack/core": "2.3.1",
+    "@rspack/core": "1.3.8",
     "acorn": "^8.19.0",
-    "esrap": "^2.4.0",
+    "esrap": "1.4.6",
     "headless-qr": "^1.0.3",
     "svelte-loader": "^3.2.4",
     "zimmerframe": "^1.1.5"
