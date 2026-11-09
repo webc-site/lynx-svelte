@@ -17,6 +17,10 @@ const prepareSvelte = async () => {
 		cwd: SVELTE_DIR
 	});
 	if (merged_code !== 0) {
+		await run('git', ['config', 'user.name', 'lynx-svelte'], { cwd: SVELTE_DIR });
+		await run('git', ['config', 'user.email', 'lynx-svelte@users.noreply.github.com'], {
+			cwd: SVELTE_DIR
+		});
 		await run('git', ['merge', '--no-ff', PR_REF, '-m', 'Merge sveltejs/svelte#18042'], {
 			cwd: SVELTE_DIR
 		});
