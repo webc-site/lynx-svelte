@@ -40,6 +40,11 @@ const svelteRule = () => ({
 	]
 });
 
+const cssRule = () => ({
+	test: /\.css$/,
+	type: 'css/auto'
+});
+
 const baseConfig = (entry, context_dir) => {
 	const entry_path = path.isAbsolute(entry) ? entry : path.resolve(context_dir, entry);
 
@@ -56,7 +61,7 @@ const baseConfig = (entry, context_dir) => {
 			conditionNames: ['browser', 'import', 'module', 'default']
 		},
 		module: {
-			rules: [svelteRule()]
+			rules: [svelteRule(), cssRule()]
 		},
 		output: {
 			path: path.resolve(context_dir, 'dist'),
@@ -79,7 +84,11 @@ const rspackConfig = (entry, context_dir) => {
 		main: BACKGROUND_ENTRY,
 		'main-thread': entry_path
 	};
-	config.module.rules = [svelte_rule, { test: /\.(js|mjs)$/, use: [SWC_LOADER] }];
+	config.module.rules = [
+		svelte_rule,
+		cssRule(),
+		{ test: /\.(js|mjs)$/, use: [SWC_LOADER] }
+	];
 
 	return {
 		...config,

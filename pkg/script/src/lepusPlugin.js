@@ -1,6 +1,7 @@
 import { parse } from 'acorn';
 import { walk } from 'zimmerframe';
 import { print } from 'esrap';
+import ts from 'esrap/languages/ts';
 
 const OPERATOR_MAP = {
 	'??=': '??',
@@ -44,10 +45,7 @@ const transformSource = (source) => {
 		}
 	});
 
-	return print(fixed_ast, {
-		ecmaVersion: 'latest',
-		sourceType: 'module'
-	}).code;
+	return print(fixed_ast, ts()).code;
 };
 
 const isJavaScriptAsset = (name) => name.endsWith('.js') && !name.endsWith('.map');
