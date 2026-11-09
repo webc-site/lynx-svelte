@@ -26,7 +26,7 @@ const prepareSvelte = async () => {
 		});
 	}
 
-	await run('bun', ['x', 'pnpm', 'install', '--frozen-lockfile'], { cwd: SVELTE_DIR });
+	await run('bun', ['x', 'pnpm', 'install'], { cwd: SVELTE_DIR });
 
 	const svelte_pkg = path.join(SVELTE_DIR, 'packages/svelte');
 	await run('bun', ['x', 'rollup', '-c'], { cwd: svelte_pkg });
@@ -34,7 +34,7 @@ const prepareSvelte = async () => {
 	await run('bun', ['scripts/generate-types.js'], { cwd: svelte_pkg });
 	await run('bun', ['scripts/check-treeshakeability.js'], { cwd: svelte_pkg });
 
-	await run('bun', ['install', '--frozen-lockfile'], { cwd: ROOT_DIR });
+	await run('bun', ['install'], { cwd: ROOT_DIR });
 };
 
 if (import.meta.main) await prepareSvelte();
