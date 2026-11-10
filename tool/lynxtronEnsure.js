@@ -3,6 +3,9 @@ import { cp, mkdir, rename } from 'node:fs/promises';
 import { APP_DIR, exists, run } from './common.js';
 
 const LYNXTRON_DIR = path.join(APP_DIR, 'lynxtron'),
+	INSTALL_ARGS = process.platform === 'win32'
+		? ['install', '--backend=copyfile']
+		: ['install'],
 	LYNXTRON_PACKAGE_DIR = path.join(LYNXTRON_DIR, 'node_modules/@lynx-js/lynxtron'),
 	RUNTIME_DIR = path.join(LYNXTRON_PACKAGE_DIR, 'dist/devtool'),
 	BUILDER_RUNTIME_DIR = path.join(LYNXTRON_PACKAGE_DIR, 'dist/builder'),
@@ -38,7 +41,7 @@ const prepareBuilderRuntime = async () => {
 };
 
 const lynxtronEnsure = async () => {
-	await run('bun', ['install'], {
+	await run('bun', INSTALL_ARGS, {
 		cwd: LYNXTRON_DIR,
 		env: { ...process.env, LYNXTRON_SKIP_DOWNLOAD: '1' }
 	});

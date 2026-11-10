@@ -2,6 +2,9 @@ import path from 'node:path';
 import { ROOT_DIR, run, runCapture, exists, SVELTE_DIR } from './common.js';
 
 const PR_REF = 'pr-18042';
+const INSTALL_ARGS = process.platform === 'win32'
+	? ['install', '--backend=copyfile']
+	: ['install'];
 
 const prepareSvelte = async () => {
 	if (!exists(path.join(SVELTE_DIR, 'package.json'))) {
@@ -27,7 +30,7 @@ const prepareSvelte = async () => {
 	}
 
 	const svelte_pkg = path.join(SVELTE_DIR, 'packages/svelte');
-	await run('bun', ['install'], { cwd: svelte_pkg });
+	await run('bun', INSTALL_ARGS, { cwd: svelte_pkg });
 	await run('bun', ['x', 'rollup', '-c'], { cwd: svelte_pkg });
 	if (process.platform !== 'win32') {
 		await run('bun', ['scripts/process-messages'], { cwd: svelte_pkg });
@@ -35,7 +38,7 @@ const prepareSvelte = async () => {
 	await run('bun', ['scripts/generate-types.js'], { cwd: svelte_pkg });
 	await run('bun', ['scripts/check-treeshakeability.js'], { cwd: svelte_pkg });
 
-	await run('bun', ['install'], { cwd: ROOT_DIR });
+	await run('bun', INSTALL_ARGS, { cwd: ROOT_DIR });
 };
 
 if (import.meta.main) await prepareSvelte();
