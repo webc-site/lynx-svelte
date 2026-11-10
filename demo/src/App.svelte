@@ -13,7 +13,7 @@
 
 	let viewportWidth = $state(viewportWidthGet()),
 		layoutMode = $derived(viewportWidth >= 720 ? 'wide' : viewportWidth <= 520 ? 'narrow' : 'medium'),
-		shellWidth = $derived(viewportWidth > 1080 ? '1080px' : '100%');
+		shellWidth = $derived(viewportWidth > 600 ? '600px' : '100%');
 
 	let section = $state('todo');
 	const sections = [
@@ -81,7 +81,7 @@
 		display: flex;
 		flex-direction: column;
 		width: 100%;
-		max-width: 1080px;
+		max-width: 600px;
 		padding: 32rpx;
 		box-sizing: border-box;
 		gap: 24rpx;

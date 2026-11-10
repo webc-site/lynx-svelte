@@ -235,7 +235,7 @@ bun run ios:build
 - `>= 720px`：wide，头部横排、Tab 单行、内边距更大
 - `520px - 720px`：medium，Tab 自动铺满
 - `<= 520px`：narrow，头部竖排居中、Logo/标题缩小
-- 页面最大宽度 `1080px`，超过后左右自动居中
+- 页面最大宽度 `600px`，超过后左右自动居中
 
 宽度来源：Web 用 `window.innerWidth + resize`，原生用 `SystemInfo.pixelWidth / pixelRatio` 兜底。样式使用元素自身类名，避免 Lynx 不支持的后代选择器。
 
