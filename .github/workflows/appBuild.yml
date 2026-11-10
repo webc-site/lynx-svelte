@@ -120,7 +120,7 @@ jobs:
 
   ios:
     name: ios simulator app
-    runs-on: macos-latest
+    runs-on: macos-15
     steps:
       - name: Checkout lynx-svelte
         uses: actions/checkout@v7
