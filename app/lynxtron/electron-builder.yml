@@ -1,5 +1,6 @@
 productName: Lynx Svelte
 appId: dev.lynxsvelte.demo
+homepage: https://webc-site.github.io/lynx-svelte/
 directories:
   output: ../../dist/desktop
   app: dist/desktop
@@ -40,5 +41,6 @@ linux:
   target:
     - AppImage
     - deb
+  maintainer: webc-site
   artifactName: LynxSvelte-v${version}-linux-${arch}.${ext}
   category: Development
