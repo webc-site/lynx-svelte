@@ -4,7 +4,7 @@ import { APP_DIR, exists, run } from './common.js';
 
 const LYNXTRON_DIR = path.join(APP_DIR, 'lynxtron'),
 	INSTALL_ARGS = process.platform === 'win32'
-		? ['install', '--backend=copyfile']
+		? ['install', '--linker=hoisted', '--backend=copyfile']
 		: ['install'],
 	LYNXTRON_PACKAGE_DIR = path.join(LYNXTRON_DIR, 'node_modules/@lynx-js/lynxtron'),
 	RUNTIME_DIR = path.join(LYNXTRON_PACKAGE_DIR, 'dist/devtool'),

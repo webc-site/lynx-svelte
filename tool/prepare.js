@@ -3,7 +3,7 @@ import { ROOT_DIR, run, runCapture, exists, SVELTE_DIR } from './common.js';
 
 const PR_REF = 'pr-18042';
 const INSTALL_ARGS = process.platform === 'win32'
-	? ['install', '--backend=copyfile']
+	? ['install', '--linker=hoisted', '--backend=copyfile']
 	: ['install'];
 
 const prepareSvelte = async () => {
