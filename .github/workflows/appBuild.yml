@@ -120,7 +120,7 @@ jobs:
 
   ios:
     name: ios simulator app
-    runs-on: macos-15
+    runs-on: macos-latest
     steps:
       - name: Checkout lynx-svelte
         uses: actions/checkout@v7
@@ -131,10 +131,6 @@ jobs:
         with:
           ruby-version: '3.2'
           bundler-cache: false
-      - name: Setup Xcode
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: '16.4'
       - name: Setup workspace
         uses: ./lynx-svelte/.github/actions/setup
       - name: Build iOS app

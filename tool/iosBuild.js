@@ -5,7 +5,33 @@ import { sparklingEnsure, SPARKLING_DIR } from './sparklingEnsure.js';
 const IOS_DIR = path.join(SPARKLING_DIR, 'ios'),
 	WORKSPACE = path.join(IOS_DIR, 'SparklingGo.xcworkspace'),
 	OUTPUT_DIR = path.join(DIST_DIR, 'ios'),
-	OUTPUT_FILE = path.join(OUTPUT_DIR, 'lynx-svelte-ios-simulator.zip');
+	OUTPUT_FILE = path.join(OUTPUT_DIR, 'lynx-svelte-ios-simulator.zip'),
+	SPARKLING_SOURCE_DIR = path.join(
+		IOS_DIR,
+		'Pods/Sparkling/packages/sparkling-sdk/ios/Sparkling'
+	),
+	SPARKLING_PATCH_LI = [
+		['Service/LynxService/SPKLynxService.swift', 'SPKLynxService'],
+		['Application/Container/Resource/SPKResourceLoaderImpl.swift', 'SPKResourceLoaderImpl']
+	];
+
+const sparklingPatch = async () => {
+	for (const [rel_path, class_name] of SPARKLING_PATCH_LI) {
+		const file_path = path.join(SPARKLING_SOURCE_DIR, rel_path);
+		if (!exists(file_path)) continue;
+		let source = await Bun.file(file_path).text();
+		if (!source.includes('SPK_PRE_SVC')) continue;
+		source = source.replace(
+			/@_used\n@_section\("__DATA, SPK_PRE_SVC"\)\nnonisolated\(unsafe\)\nprivate let [^\n]+\n/,
+			''
+		);
+		source = source.replace(
+			'@objcMembers\n',
+			`#spk_register(class: "${class_name}")\n@objcMembers\n`
+		);
+		await Bun.write(file_path, source);
+	}
+};
 
 const buildIos = async () => {
 	await sparklingEnsure();
@@ -15,6 +41,7 @@ const buildIos = async () => {
 	} else {
 		await run('pod', ['install'], { cwd: IOS_DIR });
 	}
+	await sparklingPatch();
 
 	await run(
 		'xcodebuild',
