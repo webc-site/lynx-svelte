@@ -199,7 +199,7 @@ bun run ios:build
 # 输出：dist/ios/lynx-svelte-ios-simulator.zip
 ```
 
-需要 macOS、Xcode、CocoaPods。产物是**未签名模拟器 App**；真机 IPA 需要开发者证书和 provisioning profile。
+iOS 构建会拉取 Sparkling `main`，通过本地 `Sparkling` / `SparklingMethod` / `SparklingMacro` 路径适配 `macos-latest` 的 Xcode 26。产物是**未签名模拟器 App**；真机 IPA 需要开发者证书和 provisioning profile。
 
 ## 构建实现说明
 
@@ -272,6 +272,5 @@ bun test
 - 表单输入使用 `onbindinput={inputBind(...)}`，不要用 `bind:value`。
 - Svelte 作用域样式会生成 `:where(.svelte-xxx)`；Lynx CSS 不支持后代选择器，演示样式统一使用单类选择器。
 - `Lepus` 兼容插件只降级 `??=`、`&&=`、`||=`，不处理全部新语法。
-- 桌面端本地只在 macOS 验证过 dmg/zip；Windows/Linux 由 CI 矩阵验证。
-- Android/iOS 需要本地 SDK/Xcode，未在无 SDK 环境构建。
+- 桌面端、Android、iOS 均已由 CI 矩阵验证；本地构建仍需要对应平台的 SDK/Xcode。
 - `svelte` 依赖目前是 `file:../svelte/packages/svelte`。GitHub git 依赖不能直接指向 monorepo 的 `packages/svelte` 子目录；如需远程安装，需要单独的 package 分支或 npm 包。
