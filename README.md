@@ -220,7 +220,7 @@ bun run ios:build
 `pkg/script/src/rspackConfig.js` 的原生配置：
 
 - 入口 `main-thread` 放 Svelte 应用，由 `mainThreadPlugin` 标记为 Lynx 主线程脚本
-- 入口 `main` 放一个空背景模块，`moduleWrapPlugin` 把它包装成 `{ init }` 加载器
+- 入口 `main` 放一个空背景模块，由 `RuntimeWrapperWebpackPlugin` 包装成 Lynx 可加载的运行时
 - Svelte 产物经 SWC 降到 ES2015，避免 Lepus 编码器处理私有字段时崩溃
 - CSS 在 Rspack 2 中显式配置 `{ test: /\.css$/, type: 'css/auto' }`
 

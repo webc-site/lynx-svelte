@@ -70,10 +70,7 @@ const baseConfig = (entry, context_dir) => {
 			path: path.resolve(context_dir, 'dist'),
 			publicPath: '/'
 		},
-		cache: false,
-		experiments: {
-			css: true
-		}
+		cache: false
 	};
 };
 
