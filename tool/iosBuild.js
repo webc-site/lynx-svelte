@@ -22,6 +22,12 @@ const sparklingPatch = async () => {
 		if (!exists(file_path)) continue;
 		let source = await Bun.file(file_path).text();
 		if (!source.includes('SPK_PRE_SVC')) continue;
+		if (!source.includes('import SparklingMacro')) {
+			source = source.replace(
+				'import Lynx\n',
+				'import Lynx\nimport SparklingMacro\n'
+			);
+		}
 		source = source.replace(
 			/@_used\n@_section\("__DATA, SPK_PRE_SVC"\)\nnonisolated\(unsafe\)\nprivate let [^\n]+\n/,
 			''
