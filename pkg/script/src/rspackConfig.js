@@ -1,11 +1,13 @@
 import path from 'node:path';
-import { LynxEncodePlugin, LynxTemplatePlugin } from '@lynx-js/template-webpack-plugin';
-import { WebWebpackPlugin } from '@lynx-js/web-webpack-plugin';
+import {
+	LynxEncodePlugin,
+	LynxTemplatePlugin,
+	WebEncodePlugin
+} from '@lynx-js/template-webpack-plugin';
 import { RuntimeWrapperWebpackPlugin } from '@lynx-js/runtime-wrapper-webpack-plugin';
 import { lepusCompatPlugin } from './lepusPlugin.js';
 import { mainThreadPlugin } from './mainThreadPlugin.js';
 import { scopeCssPlugin } from './scopeCssPlugin.js';
-import { webManifestFallbackPlugin } from './webBundlePlugin.js';
 
 const CUSTOM_RENDERER_ID = '@lynx-svelte/core/renderer',
 	BUNDLE_NAME = 'main.lynx.bundle',
@@ -108,18 +110,32 @@ const rspackConfig = (entry, context_dir) => {
 };
 
 const rspackWebConfig = (entry, context_dir) => {
-	const config = baseConfig(entry, context_dir);
+	const config = baseConfig(entry, context_dir),
+		entry_path = path.isAbsolute(entry) ? entry : path.resolve(context_dir, entry),
+		svelte_rule = svelteRule();
+
+	svelte_rule.use.unshift(SWC_LOADER);
+	config.entry = {
+		main: BACKGROUND_ENTRY,
+		'main-thread': entry_path
+	};
+	config.module.rules = [
+		svelte_rule,
+		cssRule(),
+		{ test: /\.(js|mjs)$/, use: [SWC_LOADER] }
+	];
+
 	return {
 		...config,
 		plugins: [
 			lepusCompatPlugin(),
 			scopeCssPlugin(),
+			mainThreadPlugin(MAIN_THREAD_ASSET_NAME),
 			new LynxTemplatePlugin({
 				filename: WEB_BUNDLE_NAME,
 				intermediate: INTERMEDIATE_NAME
 			}),
-			new WebWebpackPlugin(),
-			webManifestFallbackPlugin()
+			new WebEncodePlugin()
 		]
 	};
 };

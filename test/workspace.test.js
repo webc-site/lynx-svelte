@@ -32,7 +32,6 @@ import {
 	rspackWebConfig,
 	lepusCompatPlugin,
 	mainThreadPlugin,
-	webManifestFallbackPlugin,
 	transformSource
 } from '@lynx-svelte/script';
 import { createRenderer } from 'svelte/renderer';
@@ -81,7 +80,6 @@ test('public package entries export the documented API', () => {
 	expect(typeof rspackWebConfig).toBe('function');
 	expect(typeof lepusCompatPlugin).toBe('function');
 	expect(typeof mainThreadPlugin).toBe('function');
-	expect(typeof webManifestFallbackPlugin).toBe('function');
 	expect(typeof transformSource).toBe('function');
 });
 

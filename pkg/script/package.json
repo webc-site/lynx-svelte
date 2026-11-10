@@ -7,8 +7,7 @@
     ".": "./src/index.js",
     "./rspackConfig": "./src/rspackConfig.js",
     "./lepusPlugin": "./src/lepusPlugin.js",
-    "./mainThreadPlugin": "./src/mainThreadPlugin.js",
-    "./webBundlePlugin": "./src/webBundlePlugin.js"
+    "./mainThreadPlugin": "./src/mainThreadPlugin.js"
   },
   "bin": {
     "lynx-svelte-qr": "./bin/qrGen.js",
@@ -16,7 +15,6 @@
   },
   "dependencies": {
     "@lynx-js/template-webpack-plugin": "0.16.7",
-    "@lynx-js/web-webpack-plugin": "0.6.7",
     "@lynx-js/runtime-wrapper-webpack-plugin": "0.2.6",
     "@rspack/core": "2.3.1",
     "acorn": "^8.19.0",

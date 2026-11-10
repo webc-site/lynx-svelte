@@ -226,7 +226,7 @@ bun run ios:build
 
 ### Web 构建
 
-`rspackWebConfig` 使用 `@lynx-js/template-webpack-plugin` + `@lynx-js/web-webpack-plugin` 生成 `main.web.bundle`。当前 Web 依赖入口仍保留在 manifest 中，由 `webManifestFallbackPlugin` 保证空入口合法。
+`rspackWebConfig` 使用 `LynxTemplatePlugin + WebEncodePlugin` 生成 `main.web.bundle`。主线程入口与应用入口分离，`WebEncodePlugin` 负责把主线程代码和背景代码编码到 Web 运行时需要的 section 中。
 
 ### 响应式演示
 
@@ -272,7 +272,6 @@ bun test
 - 表单输入使用 `onbindinput={inputBind(...)}`，不要用 `bind:value`。
 - Svelte 作用域样式会生成 `:where(.svelte-xxx)`；Lynx CSS 不支持后代选择器，演示样式统一使用单类选择器。
 - `Lepus` 兼容插件只降级 `??=`、`&&=`、`||=`，不处理全部新语法。
-- `bun run test:web` 当前在本机 Chrome 下仍可能超时：`@lynx-js/web-core` 会创建 iframe，但页面内容没有挂载。静态站点构建不受影响。
 - 桌面端本地只在 macOS 验证过 dmg/zip；Windows/Linux 由 CI 矩阵验证。
 - Android/iOS 需要本地 SDK/Xcode，未在无 SDK 环境构建。
 - `svelte` 依赖目前是 `file:../svelte/packages/svelte`。GitHub git 依赖不能直接指向 monorepo 的 `packages/svelte` 子目录；如需远程安装，需要单独的 package 分支或 npm 包。

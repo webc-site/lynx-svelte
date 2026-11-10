@@ -14,7 +14,6 @@
         "@lynx-js/runtime-wrapper-webpack-plugin": "0.2.6",
         "@lynx-js/template-webpack-plugin": "0.16.7",
         "@lynx-js/web-core": "0.26.7",
-        "@lynx-js/web-webpack-plugin": "0.6.7",
         "@rspack/core": "2.3.1",
         "acorn": "^8.19.0",
         "esrap": "2.4.0",
@@ -54,7 +53,6 @@
       "dependencies": {
         "@lynx-js/runtime-wrapper-webpack-plugin": "0.2.6",
         "@lynx-js/template-webpack-plugin": "0.16.7",
-        "@lynx-js/web-webpack-plugin": "0.6.7",
         "@rspack/core": "2.3.1",
         "acorn": "^8.19.0",
         "esrap": "2.4.0",
@@ -146,10 +144,6 @@
     "@lynx-js/web-core": ["@lynx-js/web-core@0.26.7", "", { "dependencies": { "@lynx-js/css-serializer": "0.1.9", "@lynx-js/web-elements": "0.12.17", "@lynx-js/web-worker-rpc": "0.26.7", "wasm-feature-detect": "^1.8.0" }, "peerDependencies": { "@lynx-js/animax": "0.1.0-alpha.0", "@lynx-js/lynx-core": "0.1.4", "tslib": "^2.5.0" }, "optionalPeers": ["@lynx-js/animax", "@lynx-js/lynx-core", "tslib"] }, "sha512-2jTXoA2ljvEtH/cikPRZHxXNFaaqVivyz6colisqYP1UyF1gG35HSyEcnYzqmD4CPbxAfRMl70hMczEd/SJWYw=="],
 
     "@lynx-js/web-elements": ["@lynx-js/web-elements@0.12.17", "", { "dependencies": { "dompurify": "^3.4.16", "markdown-it": "^15.0.2" }, "peerDependencies": { "tslib": "^2.5.0" } }, "sha512-NuEEhxzzughWWV0Aa0oQZO3HM0TZ64I8FMIgF7fQHCx7Y/MDbc/FnQfkBX56orAhbTz3zQeu1kUVOohbiFFM/Q=="],
-
-    "@lynx-js/web-style-transformer": ["@lynx-js/web-style-transformer@0.3.0", "", {}, "sha512-UpXNSVOYH+CYUJuv5VU0xCf1iUiMNhY8Scj8OSS/Ny+D4dylu0L8J1hUklqvTiCvCopiE+yQCFCqXemFCZlKcg=="],
-
-    "@lynx-js/web-webpack-plugin": ["@lynx-js/web-webpack-plugin@0.6.7", "", { "dependencies": { "@lynx-js/web-style-transformer": "0.3.0" }, "peerDependencies": { "@lynx-js/template-webpack-plugin": "^0.6.0" } }, "sha512-izqjZLfPUeWtFC5NZsctZE7m5o0zH0shVN7xCblX6SHfOFokQj0/ldKutzEFoXfqo1VNkU5cC/yIvN2JrU5ikA=="],
 
     "@lynx-js/web-worker-rpc": ["@lynx-js/web-worker-rpc@0.26.7", "", {}, "sha512-uNr+nTNqeuETwK7lehIsSckX7pdL/866TtSKJA477UjoEpCpTqnxf6fdN+2nilnkqIbjnc7U0JJcsr0zhOGz0A=="],
 
