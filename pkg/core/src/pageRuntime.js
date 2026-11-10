@@ -46,7 +46,6 @@ const installPageGlobals = () => {
 	globalThis.queueMicrotask ??= (callback) => setTimeout(callback, 0);
 	globalThis.updatePage ??= () => undefined;
 	globalThis.processData ??= () => undefined;
-	globalThis.loadCard ??= () => undefined;
 	globalThis.runWorklet ??= runWorklet;
 };
 
