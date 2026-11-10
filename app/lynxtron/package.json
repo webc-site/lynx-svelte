@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "homepage": "https://webc-site.github.io/lynx-svelte/",
   "main": "main.js",
   "scripts": {
     "build": "rsbuild build --environment desktop",

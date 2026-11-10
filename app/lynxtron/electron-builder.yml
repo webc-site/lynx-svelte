@@ -1,6 +1,5 @@
 productName: Lynx Svelte
 appId: dev.lynxsvelte.demo
-homepage: https://webc-site.github.io/lynx-svelte/
 directories:
   output: ../../dist/desktop
   app: dist/desktop
