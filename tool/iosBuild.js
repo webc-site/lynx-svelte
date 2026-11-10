@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { chmod } from 'node:fs/promises';
 import { DIST_DIR, dirClean, exists, run } from './common.js';
 import { sparklingEnsure, SPARKLING_DIR } from './sparklingEnsure.js';
 
@@ -29,6 +30,7 @@ const sparklingPatch = async () => {
 			'@objcMembers\n',
 			`#spk_register(class: "${class_name}")\n@objcMembers\n`
 		);
+		await chmod(file_path, 0o644);
 		await Bun.write(file_path, source);
 	}
 };
