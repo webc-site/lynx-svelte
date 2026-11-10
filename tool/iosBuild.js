@@ -8,6 +8,10 @@ const IOS_DIR = path.join(SPARKLING_DIR, 'ios'),
 	OUTPUT_DIR = path.join(DIST_DIR, 'ios'),
 	OUTPUT_FILE = path.join(OUTPUT_DIR, 'lynx-svelte-ios-simulator.zip'),
 	PODFILE_PATH = path.join(IOS_DIR, 'Podfile'),
+	APP_ENTRY_PATH = path.join(
+		IOS_DIR,
+		'SparklingGo/SparklingGo/SparklingGoApp.swift'
+	),
 	SPARKLING_VENDOR_DIR = path.join(SPARKLING_DIR, 'vendor/sparkling');
 
 const sparkingMainEnsure = async () => {
@@ -54,10 +58,22 @@ const podfilePatch = async () => {
 	await Bun.write(PODFILE_PATH, source);
 };
 
+const appEntryPatch = async () => {
+	if (!exists(APP_ENTRY_PATH)) return;
+	let source = await Bun.file(APP_ENTRY_PATH).text();
+	if (source.includes('import SparklingMacro')) return;
+	source = source.replace(
+		'import SparklingMethod\n',
+		'import SparklingMethod\nimport SparklingMacro\n'
+	);
+	await Bun.write(APP_ENTRY_PATH, source);
+};
+
 const buildIos = async () => {
 	await sparklingEnsure();
 	await sparkingMainEnsure();
 	await podfilePatch();
+	await appEntryPatch();
 	if (exists(path.join(SPARKLING_DIR, 'Gemfile'))) {
 		await run('bundle', ['install'], { cwd: SPARKLING_DIR });
 		await run('bundle', ['exec', 'pod', 'install'], { cwd: IOS_DIR });
