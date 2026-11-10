@@ -1,111 +1,278 @@
 # lynx-svelte
 
-基于 [sveltejs/svelte#18042](https://github.com/sveltejs/svelte/pull/18042) **Custom Renderers API** 的 Svelte 5 + [Lynx](https://lynxjs.org/) 集成，使用 **Bun Workspaces** 拆分为核心渲染器、运行时辅助、构建脚本与演示应用。
+基于 [sveltejs/svelte#18042](https://github.com/sveltejs/svelte/pull/18042) **Custom Renderers API** 的 Svelte 5 + [Lynx](https://lynxjs.org/) 集成。
 
-## 上游版本
+项目用 **Bun Workspaces** 拆分为核心渲染器、运行时辅助、构建脚本和演示应用，并提供 Lynxtron 桌面端、Sparkling Android/iOS、Web 静态站点三条构建链路。
+
+## 技术栈
 
 | 项 | 值 |
 | --- | --- |
-| svelte 仓库 | `../svelte`（本地合并 PR #18042，`--no-ff` 合并提交 `Merge sveltejs/svelte#18042: custom renderers API`） |
-| PR 分支 | `sveltejs/svelte:refs/pull/18042/head` |
-| Svelte 版本 | `5.57.3` |
-| 渲染器 API | `svelte/renderer` 的 `createRenderer`（19 个方法） |
+| Svelte | `5.57.3`，本地合并 PR #18042 |
+| 渲染器 API | `svelte/renderer` 的 `createRenderer`，19 个方法 |
 | 编译器开关 | `experimental.customRenderer` |
+| 原生打包 | `@rspack/core` 2.x + `@lynx-js/template-webpack-plugin` |
+| Web 运行时 | `@lynx-js/web-core` |
+| 桌面端 | `@lynx-js/lynxtron` + `lynxtron-builder` |
+| 移动端 | `sparkling-app-cli` 生成的 Sparkling 工程 |
+| 包管理/运行 | Bun |
 
 ## 目录结构
 
 ```text
 lynx-svelte/
 ├── pkg/
-│   ├── core/      @lynx-svelte/core    渲染器、节点树、事件、页面生命周期
-│   ├── helper/    @lynx-svelte/helper  样式/类名/transform/事件纯函数
-│   └── script/    @lynx-svelte/script  Rspack 配置、Lepus 降级、主线程标记、二维码
-├── demo/          Svelte 演示应用（Todo / 动态样式 / 列表）
-└── test/          bun test：渲染器单测、编译器测试、端到端挂载测试
+│   ├── core/      @lynx-svelte/core    渲染器、节点树、属性、事件、页面生命周期
+│   ├── helper/    @lynx-svelte/helper  样式/类名/transform/属性合并/事件包装
+│   └── script/    @lynx-svelte/script  Rspack 配置、Lepus 降级、主线程脚本、二维码
+├── demo/          Svelte 演示应用（Todo / 动态样式 / 列表 / 响应式布局）
+├── app/
+│   └── lynxtron/  Lynxtron 桌面壳
+├── tool/          各平台构建脚本、CI 准备脚本、静态站点模板
+├── test/          bun test 单测、端到端测试、Web smoke
+└── dist/          构建产物（git 忽略）
 ```
 
-渲染器契约（PR #18042）与 Lynx PAPI 的对应关系：
+`app/sparkling/`、`app/lynxtron/node_modules/`、`app/lynxtron/dist/` 由构建脚本生成，不提交。
 
-| Renderer | Lynx |
+## 环境要求
+
+- Bun `1.4+`
+- Node.js `22+`（Lynxtron 运行时要求）
+- Git
+- macOS 桌面构建需要 Xcode Command Line Tools
+- Android 构建需要 JDK 17 + Android SDK
+- iOS 构建需要 macOS、Xcode、CocoaPods
+- Web smoke 需要本机安装 Chrome
+
+## 初始化
+
+`lynx-svelte` 默认通过本地路径引用合并后的 Svelte：
+
+```json
+"svelte": "file:../svelte/packages/svelte"
+```
+
+因此首次使用需要让 `lynx-svelte` 和 `svelte` 处于同级目录：
+
+```bash
+git clone <lynx-svelte 仓库> lynx-svelte
+git clone <svelte 仓库> svelte
+cd lynx-svelte
+bun run ci:prepare
+```
+
+`ci:prepare` 会执行 `tool/prepare.js`：
+
+1. 检查 `../svelte` 是否存在
+2. 拉取并合并 `pull/18042/head`
+3. 构建 Svelte 包
+4. 安装 `lynx-svelte` 依赖
+
+如果本地已经准备好合并后的 Svelte，可以直接：
+
+```bash
+bun install
+```
+
+手动构建 Svelte 的命令：
+
+```bash
+cd ../svelte
+bun x pnpm install
+cd packages/svelte
+bun x rollup -c
+bun scripts/process-messages
+bun scripts/generate-types.js
+bun scripts/check-treeshakeability.js
+```
+
+## 常用命令
+
+所有命令都在 `lynx-svelte` 根目录执行。
+
+| 命令 | 作用 |
+| --- | --- |
+| `bun test` | 运行单元测试和渲染器端到端测试 |
+| `bun run test:web` | 构建 Web bundle，启动本地服务，用 Chrome 做运行时 smoke |
+| `bun run demo:build` | 构建原生 Lynx 演示包 |
+| `bun run demo:dev` | 生成二维码并构建原生包 |
+| `bun run site:build` | 构建可部署的 Web 静态站点和 zip |
+| `bun run desktop:build --target=mac` | 构建 Lynxtron 桌面安装包，可选 `mac/win/linux` |
+| `bun run android:build` | 生成 Sparkling Android debug APK |
+| `bun run ios:build` | 生成 Sparkling iOS 模拟器 App |
+| `bun run ci:prepare` | CI/首次初始化：合并 Svelte PR 并构建 |
+
+### 原生 Lynx 包
+
+```bash
+bun run demo:build
+# 输出：demo/dist/main.lynx.bundle
+```
+
+本地调试：
+
+```bash
+bun run demo:dev
+```
+
+或手动生成二维码：
+
+```bash
+bun pkg/script/bin/qrGen.js --port 8080
+```
+
+用 Lynx Explorer 扫描二维码，或访问：
+
+```text
+http://<局域网地址>:8080/main.lynx.bundle?fullscreen=true
+```
+
+### Web 站点
+
+```bash
+bun run site:build
+# 输出：
+# dist/web/
+# dist/lynx-svelte-web.zip
+```
+
+直接运行 Web smoke：
+
+```bash
+bun run test:web
+```
+
+它会：
+
+1. 构建 `demo/dist/main.web.bundle`
+2. 启动 `demo/webServe.js`
+3. 用 Playwright + 本机 Chrome 加载 `@lynx-js/web-core`
+4. 检查首屏、Todo、Tab、List、计数器
+5. 截图到 `demo/dist/web-smoke.png`
+
+### 桌面端
+
+```bash
+# 当前平台
+bun run desktop:build
+
+# 指定平台
+bun run desktop:build --target=mac
+bun run desktop:build --target=win
+bun run desktop:build --target=linux
+```
+
+输出：
+
+```text
+dist/desktop/
+├── LynxSvelte-...-darwin-*.dmg
+├── LynxSvelte-...-darwin-*.zip
+├── LynxSvelte-...-win-x64.exe
+└── LynxSvelte-...-linux-*.AppImage / .deb
+```
+
+脚本会：
+
+1. 构建 `demo/dist/main.lynx.bundle`
+2. 复制到 `app/lynxtron/`
+3. 安装并准备 Lynxtron 运行时
+4. 用 rsbuild 构建主进程
+5. 用 `lynxtron-builder` 打包
+
+macOS 本地默认跳过签名；Release 签名需要配置开发者证书。
+
+### Android
+
+```bash
+bun run android:build
+# 输出：dist/android/lynx-svelte-android.apk
+```
+
+需要 JDK 17 和 Android SDK。脚本通过 `sparklingEnsure()` 生成/复用 Sparkling 工程，构建 demo 后把 `main.lynx.bundle` 注入原生 assets，再执行 Gradle `assembleDebug`。
+
+### iOS
+
+```bash
+bun run ios:build
+# 输出：dist/ios/lynx-svelte-ios-simulator.zip
+```
+
+需要 macOS、Xcode、CocoaPods。产物是**未签名模拟器 App**；真机 IPA 需要开发者证书和 provisioning profile。
+
+## 构建实现说明
+
+### 渲染器映射
+
+| Renderer | Lynx PAPI |
 | --- | --- |
 | `createFragment` | 纯 JS Fragment，插入时展开子节点 |
 | `createElement` | `__CreateView/__CreateScrollView/__CreateText/__CreateImage/__CreateList/__CreateElement` |
 | `createTextNode` | `__CreateRawText` |
-| `createComment` | `__CreateNonElement`（包装为可携带 `before` 的占位节点） |
+| `createComment` | `__CreateNonElement` |
 | `setAttribute` | `__SetInlineStyles/__SetClasses/__SetID/__AddDataset/__SetAttribute` |
-| `addEventListener` | `__AddEvent`（`bind`/`catch`/`capture-*`/`global-bind` + worklet） |
-| `insert/remove/getParent/...` | 本地有序子树 + `__InsertElementBefore/__RemoveElement` |
+| `addEventListener` | `__AddEvent` |
+| `insert/remove/getParent/...` | 本地子树 + `__InsertElementBefore/__RemoveElement` |
 
-## 快速开始
+### 原生构建
+
+`pkg/script/src/rspackConfig.js` 的原生配置：
+
+- 入口 `main-thread` 放 Svelte 应用，由 `mainThreadPlugin` 标记为 Lynx 主线程脚本
+- 入口 `main` 放一个空背景模块，`moduleWrapPlugin` 把它包装成 `{ init }` 加载器
+- Svelte 产物经 SWC 降到 ES2015，避免 Lepus 编码器处理私有字段时崩溃
+- CSS 在 Rspack 2 中显式配置 `{ test: /\.css$/, type: 'css/auto' }`
+
+### Web 构建
+
+`rspackWebConfig` 使用 `@lynx-js/template-webpack-plugin` + `@lynx-js/web-webpack-plugin` 生成 `main.web.bundle`。当前 Web 依赖入口仍保留在 manifest 中，由 `webManifestFallbackPlugin` 保证空入口合法。
+
+### 响应式演示
+
+`demo/src/App.svelte` 用运行时宽度切换布局：
+
+- `>= 720px`：wide，头部横排、Tab 单行、内边距更大
+- `520px - 720px`：medium，Tab 自动铺满
+- `<= 520px`：narrow，头部竖排居中、Logo/标题缩小
+- 页面最大宽度 `1080px`，超过后左右自动居中
+
+宽度来源：Web 用 `window.innerWidth + resize`，原生用 `SystemInfo.pixelWidth / pixelRatio` 兜底。样式使用元素自身类名，避免 Lynx 不支持的后代选择器。
+
+## 测试
 
 ```bash
-# 1. 构建合并了 PR #18042 的 svelte
-cd ../svelte && bun x pnpm install
-cd packages/svelte && bun x rollup -c && bun scripts/process-messages && bun scripts/generate-types.js && bun scripts/check-treeshakeability.js
-
-# 2. 安装 lynx-svelte 依赖
-cd ../../../lynx-svelte && bun i
-
-# 3. 单元测试与端到端测试
 bun test
-
-# 4. 构建 Lynx 演示包
-cd demo && bun run build     # 输出 demo/dist/main.lynx.bundle
-
-# 5. 生成调试二维码（可选）
-bun ../pkg/script/bin/qrGen.js --port 8080
-
-# 6. Lynx Web 运行时端到端验证（无需 Explorer）
-cd .. && bun run test:web
 ```
 
-> `bun x` 用于拉取/执行外部包或二进制；项目脚本请使用 `bun run test:web`。
+覆盖：
 
-> 上游 `svelte` monorepo 以 pnpm workspace 定义，因此依赖安装通过 `bun x pnpm install` 调用；构建、测试、演示、Web 验证等其余命令全部由 Bun 执行。
+- `@lynx-svelte/helper` 样式/类名/transform/事件纯函数
+- 渲染器节点操作
+- 页面挂载/卸载端到端
+- Svelte 编译器 `customRenderer`
+- Lepus 兼容降级
+- workspace 与构建配置
 
-`pkg/script/bin/bundleBuild.js` 直接调用 `@rspack/core`，不依赖 `@rspack/cli`/dev-server，构建体积更小、启动更快。
+## CI 与发布
 
-Web 验证会构建 `demo/dist/main.web.bundle`，启动 `demo/webServe.js`，用本机 Chrome 加载 `@lynx-js/web-core` 运行时，检查首屏渲染、Todo 勾选/删除、List 行选择、Tab 切换、计数器点击，并输出 `demo/dist/web-smoke.png` 截图。
+`.github/workflows/appBuild.yml`：
 
-用 Lynx Explorer 扫描二维码加载 `main.lynx.bundle`，或手动输入
-`http://<局域网地址>:8080/main.lynx.bundle?fullscreen=true`。
-
-## 设计要点
-
-- `experimental.customRenderer` 在 `svelte-loader` 中全局配置为 `@lynx-svelte/core/renderer`，因此组件无需逐个写 `<svelte:options customRenderer>`。
-- 组件编译产物会 `import $renderer from '@lynx-svelte/core/renderer'` 并执行 `$.push_renderer($renderer)`；`pageMount` 同时向 `mount(..., { renderer })` 传入渲染器，保证挂载根节点也走 Lynx PAPI。
-- `nodeType` 返回字符串 `fragment/element/text/comment`（Svelte 内部映射为 DOM 节点常量）。
-- `@lynx-svelte/helper` 对标 `vue-native-helper`：提供 `styleBind/classBind/transformParse/transformParseCss/propMerge/styleMerge/classMerge/propHandle/eventWrap` 等纯函数。
-- 所有 PAPI 访问都是运行时 `globalThis` 查找，便于在 Bun 测试中用 `test/mockPapi.js` 替换。
-- 自研 JS 遵循 `../js.md`：无 `class`、箭头函数、合并 `const`、`snake_case` 变量、`_li` 列表后缀、常量枚举。
-
-## 跨平台应用与 CI
-
-`app/` 使用字节官方 Lynx 应用框架：**Lynxtron** 承载 macOS/Windows/Linux 桌面端，**Sparkling** 承载 Android/iOS。两者直接加载原生 `main.lynx.bundle`，不经过浏览器内核包装。所有构建流程拆分在 `tool/`，公共逻辑位于 `tool/common.js`、`tool/webBuild.js`、`tool/sparklingEnsure.js`。
-
-```bash
-bun run site:build       # dist/web + dist/lynx-svelte-web.zip（可部署静态站点）
-bun run desktop:build    # Lynxtron 桌面安装包；--target=mac|win|linux 可指定
-bun run android:build    # Sparkling Android APK（debug 签名，可直接安装）
-bun run ios:build        # Sparkling iOS 模拟器 App（未签名）
-```
-
-GitHub Actions `.github/workflows/appBuild.yml`：
-
-- `workflow_dispatch` 或推送 `v*` tag 触发。
-- 复用 `.github/actions/setup/action.yml`：checkout `sveltejs/svelte`、合并 PR #18042、Bun 构建、依赖缓存。
-- `web` 任务构建站点并部署 GitHub Pages；`desktop` 矩阵用 Lynxtron 构建 macOS/Windows/Linux；`android`/`ios` 用 Sparkling 官方脚手架生成原生壳并注入 Svelte 产物。
-- 所有平台产物上传为 Actions artifact；tag 构建自动创建 GitHub Release 附带全部可下载文件。
-- Action 使用当前稳定大版本：`actions/checkout@v7`、`actions/cache@v6`、`actions/upload-artifact@v7`、`actions/configure-pages@v6`、`actions/upload-pages-artifact@v5`、`actions/deploy-pages@v5`、`actions/setup-java@v6`、`android-actions/setup-android@v4`、`ruby/setup-ruby@v1`、`softprops/action-gh-release@v3`、`oven-sh/setup-bun@v2`。
-
-> iOS 产物为模拟器 App，真机 IPA 需要开发者证书与 provisioning profile；签名密钥未放入仓库。Android 产物为 debug APK，Release 签名可在同一脚本中接入。
+- `workflow_dispatch` 或 `v*` tag 触发
+- 复用 `.github/actions/setup/action.yml`
+- `web`：构建站点并部署 GitHub Pages
+- `desktop`：macOS/Windows/Linux 三平台矩阵
+- `android`：JDK 17 + Android SDK，输出 APK
+- `ios`：macOS + Ruby + CocoaPods，输出模拟器 App
+- tag 构建自动创建 GitHub Release 并附带全部产物
 
 ## 已知限制
 
-- Custom Renderer 模式下不支持 DOM 专属能力：`<svelte:head>`、`<svelte:window>`、`<svelte:body>`、`bind:value`、`css: 'injected'`、`createRawSnippet`。
-- 表单输入用 `onbindinput={inputBind(...)}` 代替 `bind:value`。
-- CSS 由 `svelte-loader` 抽取，经 Rspack CSS 实验特性与 Lynx 模板插件打包；复杂选择器/动画能力取决于 Lynx 运行时。
-- `Lepus` 兼容插件仅降级 `??=`、`&&=`、`||=`，不处理其他新语法。
-- `mainThreadPlugin` 已实现于 `pkg/script/src/mainThreadPlugin.js`。原生构建默认不启用：当前 `@rspack/core` + `@lynx-js/template-webpack-plugin` 原生编码在写入 `lynx:main-thread` 资产标记时会触发 native crash（Node 22/26 均复现）。Web 构建则启用该插件，已验证主线程渲染路径。
-- Web 构建使用 `rspackWebConfig`：`mainThreadPlugin()` 将 JS 放入 `lepusCode.root`，`webManifestFallbackPlugin()` 补一个空 manifest 入口，满足 `@lynx-js/web-core` 的主线程渲染路径；该组合已在 Chrome + Lynx Web 运行时验证通过。
-- Svelte 作用域样式会为后代选择器生成 `:where(.svelte-xxx)`，Lynx CSS 解析器不支持；演示样式统一使用单类选择器，避免后代选择器。
+- Custom Renderer 模式不支持 DOM 专属能力：`<svelte:head>`、`<svelte:window>`、`<svelte:body>`、`bind:value`、`css: 'injected'`、`createRawSnippet`。
+- 表单输入使用 `onbindinput={inputBind(...)}`，不要用 `bind:value`。
+- Svelte 作用域样式会生成 `:where(.svelte-xxx)`；Lynx CSS 不支持后代选择器，演示样式统一使用单类选择器。
+- `Lepus` 兼容插件只降级 `??=`、`&&=`、`||=`，不处理全部新语法。
+- `bun run test:web` 当前在本机 Chrome 下仍可能超时：`@lynx-js/web-core` 会创建 iframe，但页面内容没有挂载。静态站点构建不受影响。
+- 桌面端本地只在 macOS 验证过 dmg/zip；Windows/Linux 由 CI 矩阵验证。
+- Android/iOS 需要本地 SDK/Xcode，未在无 SDK 环境构建。
+- `svelte` 依赖目前是 `file:../svelte/packages/svelte`。GitHub git 依赖不能直接指向 monorepo 的 `packages/svelte` 子目录；如需远程安装，需要单独的 package 分支或 npm 包。
