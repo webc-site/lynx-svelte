@@ -12,7 +12,8 @@
 	};
 
 	let viewportWidth = $state(viewportWidthGet()),
-		layoutMode = $derived(viewportWidth >= 720 ? 'wide' : viewportWidth <= 520 ? 'narrow' : 'medium');
+		layoutMode = $derived(viewportWidth >= 720 ? 'wide' : viewportWidth <= 520 ? 'narrow' : 'medium'),
+		shellWidth = $derived(viewportWidth > 1080 ? '1080px' : '100%');
 
 	let section = $state('todo');
 	const sections = [
@@ -32,7 +33,10 @@
 </script>
 
 <scroll-view class="page">
-	<view class="shell {layoutMode}">
+	<view
+		class="shell {layoutMode}"
+		style="width: {shellWidth}; margin-left: auto; margin-right: auto"
+	>
 		<view class="header {layoutMode}">
 			<image class="logo {layoutMode}" src="https://github.com/sveltejs/branding/raw/master/svelte-logo-square.png" />
 			<view class="header-text {layoutMode}">
