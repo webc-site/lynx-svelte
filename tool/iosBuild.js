@@ -7,6 +7,7 @@ const IOS_DIR = path.join(SPARKLING_DIR, 'ios'),
 	WORKSPACE = path.join(IOS_DIR, 'SparklingGo.xcworkspace'),
 	OUTPUT_DIR = path.join(DIST_DIR, 'ios'),
 	OUTPUT_FILE = path.join(OUTPUT_DIR, 'lynx-svelte-ios-simulator.zip'),
+	PODFILE_PATH = path.join(IOS_DIR, 'Podfile'),
 	SPARKLING_SOURCE_DIR = path.join(
 		IOS_DIR,
 		'Pods/Sparkling/packages/sparkling-sdk/ios/Sparkling'
@@ -41,8 +42,20 @@ const sparklingPatch = async () => {
 	}
 };
 
+const sparklingPodfilePatch = async () => {
+	if (!exists(PODFILE_PATH)) return;
+	let source = await Bun.file(PODFILE_PATH).text();
+	if (source.includes("pod 'SparklingMacro'")) return;
+	source = source.replace(
+		"pod 'Sparkling', SPARKLING_VERSION",
+		"pod 'Sparkling', SPARKLING_VERSION\n  pod 'SparklingMacro', SPARKLING_VERSION"
+	);
+	await Bun.write(PODFILE_PATH, source);
+};
+
 const buildIos = async () => {
 	await sparklingEnsure();
+	await sparklingPodfilePatch();
 	if (exists(path.join(SPARKLING_DIR, 'Gemfile'))) {
 		await run('bundle', ['install'], { cwd: SPARKLING_DIR });
 		await run('bundle', ['exec', 'pod', 'install'], { cwd: IOS_DIR });
