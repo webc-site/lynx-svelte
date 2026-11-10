@@ -92,6 +92,6 @@ test('script package exposes working build config factories', () => {
 	expect(native.entry['main-thread']).toBe(path.join(ROOT_DIR, 'src/index.js'));
 	expect(native.entry.main).toContain('backgroundEntry.js');
 	expect(native.resolve.conditionNames).toContain('browser');
-	expect(native.plugins.length).toBe(5);
-	expect(web.plugins.length).toBe(4);
+	expect(native.plugins.length).toBe(6);
+	expect(web.plugins.length).toBe(5);
 });

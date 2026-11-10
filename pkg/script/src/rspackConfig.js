@@ -1,9 +1,10 @@
 import path from 'node:path';
 import { LynxEncodePlugin, LynxTemplatePlugin } from '@lynx-js/template-webpack-plugin';
 import { WebWebpackPlugin } from '@lynx-js/web-webpack-plugin';
+import { RuntimeWrapperWebpackPlugin } from '@lynx-js/runtime-wrapper-webpack-plugin';
 import { lepusCompatPlugin } from './lepusPlugin.js';
 import { mainThreadPlugin } from './mainThreadPlugin.js';
-import { moduleWrapPlugin } from './moduleWrapPlugin.js';
+import { scopeCssPlugin } from './scopeCssPlugin.js';
 import { webManifestFallbackPlugin } from './webBundlePlugin.js';
 
 const CUSTOM_RENDERER_ID = '@lynx-svelte/core/renderer',
@@ -94,8 +95,9 @@ const rspackConfig = (entry, context_dir) => {
 		...config,
 		plugins: [
 			lepusCompatPlugin(),
+			scopeCssPlugin(),
 			mainThreadPlugin(MAIN_THREAD_ASSET_NAME),
-			moduleWrapPlugin('main.js', '/main.js'),
+			new RuntimeWrapperWebpackPlugin(),
 			new LynxEncodePlugin(),
 			new LynxTemplatePlugin({
 				filename: BUNDLE_NAME,
@@ -111,6 +113,7 @@ const rspackWebConfig = (entry, context_dir) => {
 		...config,
 		plugins: [
 			lepusCompatPlugin(),
+			scopeCssPlugin(),
 			new LynxTemplatePlugin({
 				filename: WEB_BUNDLE_NAME,
 				intermediate: INTERMEDIATE_NAME

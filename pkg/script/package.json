@@ -17,6 +17,7 @@
   "dependencies": {
     "@lynx-js/template-webpack-plugin": "0.16.7",
     "@lynx-js/web-webpack-plugin": "0.6.7",
+    "@lynx-js/runtime-wrapper-webpack-plugin": "0.2.6",
     "@rspack/core": "2.3.1",
     "acorn": "^8.19.0",
     "esrap": "2.4.0",
