@@ -78,6 +78,8 @@ const buildIos = async () => {
 			'iphonesimulator',
 			'-derivedDataPath',
 			path.join(IOS_DIR, 'build'),
+			'ARCHS=arm64',
+			'ONLY_ACTIVE_ARCH=YES',
 			'CODE_SIGNING_ALLOWED=NO',
 			'build'
 		],
