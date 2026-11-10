@@ -65,11 +65,15 @@
 	.input-row {
 		display: flex;
 		flex-direction: row;
+		width: 100%;
+		min-width: 0;
 		gap: 12rpx;
 		margin-top: 8rpx;
 	}
 	.input {
 		flex: 1;
+		width: 0;
+		min-width: 0;
 		height: 84rpx;
 		padding: 0 24rpx;
 		border-radius: 20rpx;
@@ -78,6 +82,7 @@
 		font-size: 30rpx;
 	}
 	.add {
+		flex: 0 0 auto;
 		padding: 0 32rpx;
 		height: 84rpx;
 		display: flex;
