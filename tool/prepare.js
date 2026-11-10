@@ -26,7 +26,7 @@ const prepareSvelte = async () => {
 		});
 	}
 
-	await run('bun', ['x', 'pnpm', 'install'], { cwd: SVELTE_DIR });
+	await run('bun', ['x', 'pnpm', 'install', '--ignore-scripts'], { cwd: SVELTE_DIR });
 
 	const svelte_pkg = path.join(SVELTE_DIR, 'packages/svelte');
 	await run('bun', ['x', 'rollup', '-c'], { cwd: svelte_pkg });
